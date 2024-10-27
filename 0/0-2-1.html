@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .navbar-left,
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+    }
+
+    .navbar-right {
+      flex-grow: 1;
+      justify-content: flex-end; 
+    }
+
+    img{
+      width: 32px;
+      height: auto;
+      transition: all 0.5s ease;
+    }
+    a{
+      text-decoration: none;
+      color:black;
+    }
+
+    @media (max-width: 768px) {
+      .site-name {
+        display: none;
+      }
+      .navbar-right {
+        justify-content: space-between;
+        font-size: 0.7rem;
+        margin-left: 1rem;
+      }
+    }
+    @media (max-width: 480px) {
+      img {
+        width: 2px;
+      }
+    }
+    @media (max-width: 320px) {
+      img {
+        display: none;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="navbar-left">
+      <img class="logo" src="imgs/main-logo.webp"/>
+      <a class="site-name" href="https://www.smumc.co.kr/">SSUMC</a>
+    </div>
+    <div class="navbar-right">
+      <a class="projects" href="https://www.smumc.co.kr/projects">PROJECTS</a>
+      <a class="members" href="https://www.smumc.co.kr/members">MEMBERS</a>
+      <a class="notice" href="https://www.smumc.co.kr/notice">NOTICE</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+  </div>
+
+</body>
+</html>

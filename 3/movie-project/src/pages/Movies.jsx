@@ -6,9 +6,9 @@ import styled from 'styled-components';
 const baseURL = 'https://image.tmdb.org/t/p/original'
 
 const StyledCardList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
 `
 const StyledCard = styled.div`
   width: 120px;

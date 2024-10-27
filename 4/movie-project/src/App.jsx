@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import RootLayout from './layout/RootLayout';
-import {Home, Movies, Error, Login, SignUp, Search, Category} from './pages';
+import RootLayout from './layout/rootLayout/RootLayout';
+import {Home, Error, Login, SignUp, Search, Category, MoviesCategory, MovieDetails} from './pages';
 import GlobalStyles from "./GlobalStyles";
 
 const router = createBrowserRouter([
@@ -16,10 +16,6 @@ const router = createBrowserRouter([
 				element: <Home/>
 			},
 			{
-				path: 'movies/:category',
-				element: <Movies/>
-			},
-			{
 				path: 'login',
 				element: <Login/>
 			},
@@ -32,9 +28,17 @@ const router = createBrowserRouter([
 				element: <Search/>
 			},
 			{
-				path: 'category',
+				path: 'categories',
 				element: <Category/>
-			}
+			},
+			{ 
+				path: 'categories/:category',
+				element: <MoviesCategory/> 
+			},
+			{
+				path: 'movies/:movieId',
+				element: <MovieDetails/>
+			},
 		],
 	},
 ])
@@ -42,7 +46,7 @@ const router = createBrowserRouter([
 function App() {
 	return(
 		<>
-			<GlobalStyles/>
+			<GlobalStyles />
 			<RouterProvider router={router}/>
 		</>
 	);

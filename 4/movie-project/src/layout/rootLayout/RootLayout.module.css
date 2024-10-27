@@ -1,0 +1,10 @@
+.contentContainer{
+  display: flex;
+  min-height: 100vh;
+}
+
+.outletContianer{
+  flex: 1;
+  padding: 2rem;
+  overflow: hidden;
+}

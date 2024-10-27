@@ -58,5 +58,5 @@ function moveToDone(todoItem) {
   // 할 일 항목에 삭제 버튼 추가 후 해낸 일 목록에 추가
   todoItem.appendChild(deleteButton);
   doneList.appendChild(todoItem);
-}
 
+}

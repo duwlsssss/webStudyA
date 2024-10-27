@@ -52,13 +52,10 @@ input::placeholder {
 
 ul {
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .todo-item {
-  list-style: none;
+  text-decoration: none;
   border-bottom: 4px solid #d6d6d6;
   display: flex;
   justify-content: space-between;

@@ -1,21 +1,12 @@
 import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset'
 
 const GlobalStyles = createGlobalStyle`
-  * {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    box-sizing: border-box;
-  }
-
+  ${reset}
   body {
     color: white;
     background-color: black;
     font-family: Arial, sans-serif;
-  }
-
-  html, body, #root {
-    height: 100%;
   }
 `;
 

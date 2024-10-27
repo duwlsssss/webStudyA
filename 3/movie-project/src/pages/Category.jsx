@@ -11,9 +11,10 @@ const StyledTitle = styled.div`
 
 const CategoryCardList = styled.div`
   display: flex;
+  flex-basis:0;
+  flex-grow:1;
   gap: 2rem;
   align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
 `;
 

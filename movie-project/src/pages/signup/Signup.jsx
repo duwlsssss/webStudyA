@@ -65,6 +65,7 @@ export const SignUp = () => {
         <div className={style.genderContainer}>
           <label>
             <input 
+              className={style.genderInput}
               type={"radio"} 
               value={"male"} 
               {...register("gender")} 
@@ -73,6 +74,7 @@ export const SignUp = () => {
           </label>
           <label>
             <input 
+              className={style.genderInput}
               type={"radio"} 
               value={"female"} 
               {...register("gender")} 

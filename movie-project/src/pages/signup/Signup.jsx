@@ -33,7 +33,7 @@ export const SignUp = () => {
 
   return (
     <div className={style.loginContianer}>
-      <h1>로그인</h1>
+      <h1>회원가입</h1>
       <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
         <input 
           className={`${style.input} ${errors.email ? style.errorInput : ''}`}

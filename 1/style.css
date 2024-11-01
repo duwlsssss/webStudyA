@@ -1,0 +1,79 @@
+*{
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-color: rgba(233, 233, 233, 0.901);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 80%; 
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 5rem auto;
+}
+
+input {
+  width: 70%;
+  padding: 0.7rem;
+  margin: 1.5rem auto;
+}
+
+input::placeholder {
+  font-style: italic;
+  color: #a3a3a3;
+}
+
+.lists {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  padding: 1rem;
+}
+
+.todo, .done {
+  width: 30%;
+}
+
+.sub-title {
+  display: inline-block;
+  border-bottom: 2px solid #d6d6d6;
+}
+
+ul {
+  padding: 0;
+}
+
+.todo-item {
+  text-decoration: none;
+  border-bottom: 4px solid #d6d6d6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.complete-btn, .delete-btn {
+  background-color: #d6d6d6;
+  color: white;
+  border: none;
+  padding: 0.1rem 0.3rem; 
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.complete-btn:hover, .delete-btn:hover {
+  background-color: #949494;
+}

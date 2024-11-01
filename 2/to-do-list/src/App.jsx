@@ -1,10 +1,11 @@
 import ToDoList from './components/ToDoList';
 import "./App.css"
-
-function App() {
+import {TodoListProvider} from './contexts/TodoListContext'
+export default function App() {
   return (
-    <ToDoList/>
+    <TodoListProvider>
+      <ToDoList/>
+    </TodoListProvider>
   );
 }
 
-export default App;

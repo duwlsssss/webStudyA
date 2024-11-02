@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { useCustomFetch } from "../../../hooks/useCustomFetch";
-import defaultProfile from '../../../assets/img/movieDetails/profile_path_null.jpg'
+import useCustomFetchMovie from "../../../hooks/useCustomFetchMovie";
+import defaultProfile from '../../../assets/img/movie/cast/profile_path_null.jpg'
 import style from './MovieDetails.module.css'
 
 export const MovieDetails = () => {
   const { movieId } = useParams();;
-  const [credit, isLoading, isError] = useCustomFetch(`/${movieId}/credits?language=ko`);
+  const {data: credit, isLoading, isError} = useCustomFetchMovie(`/movie/${movieId}/credits?language=ko`);
   const location = useLocation();
   const { title, backdrop_path, vote_average, overview, release_year, tagline, runtime } = location.state || {};
 
@@ -24,18 +24,18 @@ export const MovieDetails = () => {
       <img className={style.mainImg} src={`${import.meta.env.VITE_TMDB_IMG_URL}${backdrop_path}`} alt={title}/>
       <div className={style.mainInner}>
         <div className={style.mainTitle}>{title}</div>
-        <div className={style.vote}>▪ 평균 {vote_average}</div>
-        <div className={style.release}>▪ {release_year}</div>
-        <div className={style.runtime}>▪ {runtime}분</div>
+        {vote_average ? <div className={style.vote}>▪ 평균 {vote_average}</div> : null}
+        {release_year ? <div className={style.release}>▪ {release_year}</div> : null}
+        {runtime ? <div className={style.runtime}>▪ {runtime}분</div> : null}
         <div className={style.tagline}>{tagline}</div>
         <div className={style.overview}>{overview}</div>
       </div>
       <div className={style.creditTitle}>감독/출연</div>
       <div className={style.creditInner}>
-        {credit?.cast.map((cast)=>(
+        {credit?.cast.map((cast, index)=>(
             <div 
               className={style.cast}
-              key={cast.id} 
+              key={`${cast.id}-${index}`}  // 고유한 key 생성
             >
             <img 
               className={style.castImg}

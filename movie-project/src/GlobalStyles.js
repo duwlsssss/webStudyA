@@ -38,12 +38,20 @@ const GlobalStyles = createGlobalStyle`
     --color-white: #fff;
     --color-gray: #777;
     --color-dark-gray: #555;
+
+    --border-radius-small: 5px;
+    --border-radius-medium: 10px;
   }
 
   body {
     color: var(--color-white);
     background-color: black;
     font-family: "Pretendard", sans-serif;
+  }
+
+  input{
+    outline:none;
+    border: none;
   }
 
   img{

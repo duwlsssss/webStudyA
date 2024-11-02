@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import RootLayout from './layout/rootLayout/RootLayout';
 import {Home, Error, Login, SignUp, Search, Category, MoviesCategory, MovieDetails} from './pages';
 import GlobalStyles from "./GlobalStyles";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -45,10 +46,10 @@ const router = createBrowserRouter([
 
 function App() {
 	return(
-		<>
+		<AuthProvider>
 			<GlobalStyles />
 			<RouterProvider router={router}/>
-		</>
+		</AuthProvider>
 	);
 }
 

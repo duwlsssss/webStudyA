@@ -63,6 +63,10 @@ import {useForm} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Button} from '../../components';
+import { Userlogin } from "../../api/endpoints/auth";
+import { useNavigate } from "react-router-dom";
+import {useUserAuthValue,useUserAuthAction} from '../../contexts/AuthContext';
+import {fetchUser} from '../../api/endpoints/user';
 
 export const Login = () => {
   const schema = yup.object().shape({
@@ -80,15 +84,35 @@ export const Login = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log('폼 데이터 제출')
-    console.log(data);
-  }
+
+  const navigate = useNavigate();
+  const {login} = useUserAuthAction();
+
+  const handleLogin = async (data) => {
+    try {
+      const response = await Userlogin(data);
+      // console.log(response);
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+
+      const userData = await fetchUser();
+      // console.log('Fetched user data:', userData);
+      login({
+        ...userData,
+        refreshToken: response.refreshToken,
+        accessToken: response.accessToken,
+      });
+
+      navigate('/'); // 로그인 성공 시 홈으로 이동
+    } catch (error) {
+      console.error('로그인 실패:', error.message);
+    }
+  };
 
   return (
     <div className={style.loginContianer}>
       <h1>로그인</h1>
-      <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
+      <form className={style.form} onSubmit={handleSubmit(handleLogin)}>
         <input 
           className={`${style.input} ${errors.email ? style.errorInput : ''}`}
           type={'email'} 

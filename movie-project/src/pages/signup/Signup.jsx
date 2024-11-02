@@ -4,8 +4,11 @@ import {useForm} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Button} from '../../components';
+import { registerUser } from "../../api/endpoints/auth";
+import { useNavigate } from "react-router-dom";
 
 export const SignUp = () => {
+
   const schema = yup.object().shape({
     email: yup.string()
       .required('이메일을 반드시 입력해주세요.')
@@ -17,8 +20,8 @@ export const SignUp = () => {
     passwordCheck: yup.string()
       .required('비밀번호를 반드시 다시 입력해주세요.') 
       .oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.'),
-    birthday: yup.string().required('생일을 입력해주세요.'), 
-    gender: yup.string().required('성별을 선택해주세요.'),
+    // birthday: yup.string().required('생일을 입력해주세요.'), 
+    // gender: yup.string().required('성별을 선택해주세요.'),
   })
 
   const {register, handleSubmit, formState: {isSubmitting, isValid, isDirty, errors}} = useForm({
@@ -26,15 +29,29 @@ export const SignUp = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log('폼 데이터 제출')
-    console.log(data);
-  }
+
+  const navigate = useNavigate();
+
+  const handleRegisterUser = async (data) => {
+    try {
+      const userData = {
+        email: data.email,
+        password: data.password,
+        passwordCheck: data.passwordCheck,
+      };
+      
+      await registerUser(userData);
+      navigate('/login');
+    } catch (error) {
+      console.error('회원 등록 실패 : ', error.message);
+    }
+  };
+
 
   return (
     <div className={style.loginContianer}>
       <h1>회원가입</h1>
-      <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
+      <form className={style.form} onSubmit={handleSubmit(handleRegisterUser)}>
         <input 
           className={`${style.input} ${errors.email ? style.errorInput : ''}`}
           type={'email'} 
@@ -56,7 +73,7 @@ export const SignUp = () => {
           {...register("passwordCheck")}
         />
         <p className={style.errorMessage}>{errors.passwordCheck?.message}</p>
-        <input 
+        {/* <input 
           className={`${style.input} ${errors.birthday ? style.errorInput : ''}`}
           type={'date'} 
           {...register("birthday")}
@@ -82,7 +99,7 @@ export const SignUp = () => {
             여성
           </label>
         </div>
-        <p className={style.errorMessage}>{errors.gender?.message}</p>
+        <p className={style.errorMessage}>{errors.gender?.message}</p> */}
         <Button 
           color='pink'
           shape='block'

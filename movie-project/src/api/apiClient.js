@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, TMDB_MOVIE_URL, API_ENDPOINTS } from './config.js';
+import { API_BASE_URL, API_ENDPOINTS } from './config.js';
 import { handleAPIError } from './errorHandling.js';
 
 // axios 인스턴스 생성
@@ -27,12 +27,12 @@ const refreshAccessToken = async () => {
     if (!response || !response.accessToken || !response.refreshToken) {
       throw new Error("유효하지 않은 토큰 갱신 응답");
     }
+ 
+    const { accessToken: newAccessToken, refreshToken } = response;
+    localStorage.setItem('accessToken', newAccessToken);
+    localStorage.setItem('refreshToken', refreshToken);
 
-    const { accessToken, refreshToken: newRefreshToken } = response;
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', newRefreshToken);
-
-    return accessToken;
+    return newAccessToken;
   } catch (error) {
     console.error('토큰 갱신 중 오류 발생:', error);
     throw error;
@@ -41,8 +41,18 @@ const refreshAccessToken = async () => {
 
 // 요청을 인터셉트해서 요청마다 accessToken을 추가
 api.interceptors.request.use((config) => {
+
   const accessToken = localStorage.getItem('accessToken');
-  if (accessToken) {
+
+  // 토큰이 필요 없는 엔드포인트 리스트
+  const publicEndpoints = [
+    API_ENDPOINTS.LOGIN,       // 예시: 로그인 엔드포인트
+    API_ENDPOINTS.SIGNUP,      // 예시: 회원가입 엔드포인트
+    API_ENDPOINTS.REFRESH_TOKEN, // 토큰 갱신은 리프레시 토큰으로 처리
+  ];
+  
+  // 요청 URL이 publicEndpoints에 포함되지 않는 경우에만 Authorization 헤더 추가
+  if (accessToken && !publicEndpoints.includes(config.url)) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
@@ -66,6 +76,7 @@ api.interceptors.response.use(
       try {
         const newAccessToken = await refreshAccessToken();
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        console.log(originalRequest);
         isRefreshing = false; // 갱신 플래그 해제
         return api(originalRequest); //재시도 요청 실행
       } catch (refreshError) {
@@ -76,6 +87,7 @@ api.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+        alert('다시 로그인해주세요')
         return Promise.reject(refreshError);
       }
     }

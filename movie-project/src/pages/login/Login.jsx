@@ -92,16 +92,19 @@ export const Login = () => {
     try {
       const response = await Userlogin(data);
       // console.log(response);
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
+
+      localStorage.setItem('accessToken', response?.accessToken);
+      localStorage.setItem('refreshToken', response?.refreshToken);
 
       const userData = await fetchUser();
       // console.log('Fetched user data:', userData);
-      login({
-        ...userData,
-        refreshToken: response.refreshToken,
-        accessToken: response.accessToken,
-      });
+      if(userData){
+        login({
+          ...userData,
+          refreshToken: response.refreshToken,
+          accessToken: response.accessToken,
+        });
+      }
 
       navigate('/'); // 로그인 성공 시 홈으로 이동
     } catch (error) {

@@ -30,7 +30,6 @@ export const Userlogin = async (userData) => {
     return response;
   } catch (error) {
     console.error('로그인 오류:', error);
-    alert(error);
     return error;
   }
 };

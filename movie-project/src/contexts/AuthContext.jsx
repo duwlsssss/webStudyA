@@ -1,5 +1,4 @@
 import React, { useState, useMemo, createContext, useContext, useCallback, useEffect } from 'react';
-import { fetchUser } from '../api/endpoints/user';  // 유저 정보를 가져오는 API 함수
 
 const AuthValueContext = createContext(null);
 const AuthActionContext = createContext(null);

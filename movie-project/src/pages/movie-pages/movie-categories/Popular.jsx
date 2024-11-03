@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import style from './MovieCategories.module.css'
+import { useParams } from "react-router-dom";
+import * as S from './MovieCategories.styles'
+import { MovieCard, CardSkeletonList, Error } from "../../../components";
 import useCustomFetchMovie from '../../../hooks/useCustomFetchMovie' 
 import {movieApi} from '../../../api/apiClient'
 
 export const Popular = () => {
-  const navigate = useNavigate();
   const {category} = useParams();
   const {data: movies, isLoading, isError} = useCustomFetchMovie(`/movie/${category}?language=ko&page=1&region=KR`);
   const [movieDetails, setMovieDetails] = useState({}); //movies.results의 id로 detail 가져오고 저장할거임
@@ -49,41 +49,23 @@ export const Popular = () => {
   // }, [movieDetails]);
 
 
-  if(isError){
-    return <div><h1>에러 발생</h1></div>
+  if (isLoading){
+    return(
+      <S.MoviesContainer>
+        <CardSkeletonList number={20}/>
+      </S.MoviesContainer>
+    )  
   }
-  if(isLoading){
-    return <div><h1>로딩 중...</h1></div>
+
+  if(isError){
+    return <Error message="오류가 발생했습니다." />;
   }
   
   return (
-    <div className={style.cardList}>
+    <S.MoviesContainer>
       {Object.values(movieDetails)?.map((movie) => (
-        <div 
-          className={style.card}
-          key={movie.id} 
-          onClick={()=>navigate(`/movies/${movie.id}`,{
-            replace: false,
-            state: { 
-              title: movie.title ?? '',
-              backdrop_path: movie.backdrop_path ?? '',
-              vote_average: movie.vote_average ? movie.vote_average.toFixed(2) : '',
-              overview: movie.overview ?? '',
-              release_year: movie.release_date ? movie.release_date.slice(0, 4) : '',
-              tagline: movie.tagline ?? '',
-              runtime: movie.runtime ?? ''
-            }
-          })}
-        >
-          <img 
-            className={style.cardImg}
-            src={`${import.meta.env.VITE_TMDB_IMG_URL}${movie.poster_path}`}
-            alt={movie.title}
-          />
-          <div className={style.cardTitle}>{movie.title}</div>
-          <div className={style.cardReleaseDate}>{movie.release_date}</div>
-        </div>
+        <MovieCard key={movie.id} movie={movie} />
       ))}
-    </div>
+    </S.MoviesContainer>
   );
 }

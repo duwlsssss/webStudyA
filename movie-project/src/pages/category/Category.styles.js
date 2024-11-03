@@ -1,34 +1,38 @@
-.title{
+import styled from "styled-components";
+
+export const Title = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-}
+`;
 
-.cardList{
+export const CardList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(350px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1rem;
-}
+`;
 
-.card{
+export const Card = styled.div`
   width: 100%;
   height: auto;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-}
-.cardImg {
-  width: 100%;
-  aspect-ratio: 2 / 1;   
-  object-fit: cover;
-  border-radius: 10px;
-  transition: filter 0.3s ease;
-}
-.cardImg:hover{
-  filter: brightness(50%);
-}
+`;
 
-.cardLabel {
+export const CardImg = styled.img`
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border-radius: var(--border-radius-medium);
+  transition: filter 0.3s ease;
+
+  &:hover {
+    filter: brightness(50%);
+  }
+`;
+
+export const CardLabel = styled.div`
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -37,4 +41,4 @@
   border-radius: var(--border-radius-small);
   font-size: 0.8rem;
   color: var(--color-white);
-}
+`;

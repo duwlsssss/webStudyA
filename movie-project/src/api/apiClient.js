@@ -7,8 +7,6 @@ const api = axios.create({
   baseURL: API_BASE_URL, 
 });
 
-let isRefreshing = false;
-
 // 토큰 갱신 함수
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
@@ -29,11 +27,11 @@ const refreshAccessToken = async () => {
     }
  
     console.log(response)
-    const { accessToken: newAccessToken, refreshToken } = response;
-    localStorage.setItem('accessToken', newAccessToken);
+    const { accessToken, refreshToken } = response;
+    localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
 
-    return newAccessToken;
+    return accessToken;
   } catch (error) {
     console.error('토큰 갱신 중 오류 발생:', error);
     throw error;

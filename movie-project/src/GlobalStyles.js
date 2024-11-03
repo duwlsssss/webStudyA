@@ -32,6 +32,7 @@ const GlobalStyles = createGlobalStyle`
     --font-small: clamp(0.8rem, 1.5vw, 1rem);
     --font-medium: clamp(1.2rem, 2vw, 1.7rem);
     --font-large: clamp(1.5rem, 2.5vw, 2rem);
+    --font-xlarge: clamp(2rem, 4vw, 6rem);
 
     --color-pink: #fc1287;
     --color-pink-dark: #E21079;

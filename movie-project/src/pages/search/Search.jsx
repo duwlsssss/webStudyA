@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import * as S from './Search.styles.js';
 import { Button, SearchMovieList } from '../../components';
 import { useSearchParams, useNavigate } from 'react-router-dom';

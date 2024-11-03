@@ -1,12 +1,13 @@
 import React from "react";
-import * as S from './MovieCard.style.js';
+import * as S from './MovieCard.styles';
 import { useNavigate } from "react-router-dom";
-import defaultPoster from '../../assets/img/movie/cast/profile_path_null.jpg'
+import defaultPoster from '../../assets/img/movie/poster/poster_null.png';
 
 export const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
   return (
     <S.Card
+      key={movie.id}
       onClick={() => navigate(`/movies/${movie.id}`, {
         replace: false,
         state: {
@@ -20,13 +21,12 @@ export const MovieCard = ({ movie }) => {
         }
       })}
     >
-      <img
-        className="cardImg"
+      <S.CardImg
         src={movie.poster_path ? `${import.meta.env.VITE_TMDB_IMG_URL}${movie.poster_path}` : defaultPoster}
         alt={movie.title || '영화 포스터'}
       />
-      <div className="cardTitle">{movie.title}</div>
-      <div className="cardReleaseDate">{movie.release_date}</div>
+      <S.CardTitle>{movie.title}</S.CardTitle>
+      <S.CardReleaseDate>{movie.release_date}</S.CardReleaseDate>
     </S.Card>
   );
 };

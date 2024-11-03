@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
-import {Link,useNavigate} from "react-router-dom";
+import React, {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import { MdLocalMovies } from "react-icons/md";
 import { Button } from '../button/Button';
-import style from './Navbar.module.css'; 
+import * as S from './Navbar.styles';
 import { fetchUser } from "../../api/endpoints/user";
 import {useUserAuthValue,useUserAuthAction} from '../../contexts/AuthContext';
 
@@ -38,19 +38,16 @@ export const Navbar = () => {
 
 
   return (
-    <div className={style.navbarContainer}>
-      <Link className={style.textLogo} to={'/'}>YOUNGCHA</Link>
-      <Link className={style.iconLogo} to={'/'}>
-        <MdLocalMovies size={25}/>
-      </Link>
-      <div className={style.navRight}>
-        { user ? (
+    <S.NavbarContainer>
+      <S.TextLogo to="/">YOUNGCHA</S.TextLogo>
+      <S.IconLogo to="/">
+        <MdLocalMovies size={25} />
+      </S.IconLogo>
+      <S.NavRight>
+        {user ? (
           <>
-            <div className={style.username}>
-              {user.email.split('@')[0]} 님
-            </div>
+            <S.Username>{user.email.split('@')[0]} 님</S.Username>
             <Button
-              className={style.logoutBtn}
               color='pink'
               shape='block'
               onClick={handleLogout}
@@ -58,18 +55,16 @@ export const Navbar = () => {
               로그아웃
             </Button>
           </>
-        ):(
+        ) : (
           <>
             <Button
-            className={style.loginBtn}
-            color='pink'
-            shape='block'
-            onClick={() => navigate(`/login`, { replace: false })}
+              color='pink'
+              shape='block'
+              onClick={() => navigate(`/login`, { replace: false })}
             >
               로그인
             </Button>
             <Button
-              className={style.signupBtn}
               color='gray'
               shape='block'
               onClick={() => navigate(`/signup`, { replace: false })}
@@ -78,8 +73,8 @@ export const Navbar = () => {
             </Button>
           </>
         )}
-      </div>
-    </div>
+      </S.NavRight>
+    </S.NavbarContainer>
   );
 };
 

@@ -58,14 +58,13 @@
 
 
 import React from "react";
-import style from './Login.module.css';
-import {useForm} from 'react-hook-form'
+import * as S from './Login.styles';
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import {yupResolver} from '@hookform/resolvers/yup'
-import {Button} from '../../components';
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Userlogin } from "../../api/endpoints/auth";
 import { useNavigate } from "react-router-dom";
-import {useUserAuthValue,useUserAuthAction} from '../../contexts/AuthContext';
+import { useUserAuthAction } from '../../contexts/AuthContext';
 import {fetchUser} from '../../api/endpoints/user';
 
 export const Login = () => {
@@ -113,33 +112,34 @@ export const Login = () => {
   };
 
   return (
-    <div className={style.loginContianer}>
-      <h1>로그인</h1>
-      <form className={style.form} onSubmit={handleSubmit(handleLogin)}>
-        <input 
-          className={`${style.input} ${errors.email ? style.errorInput : ''}`}
-          type={'email'} 
-          placeholder={"이메일을 입력해주세요"}
+    <S.LoginContainer>
+      <S.Title>로그인</S.Title>
+      <S.Form onSubmit={handleSubmit(handleLogin)}>
+        <S.Input
+          className={errors.email ? "error" : ""}
+          type="email"
+          placeholder="이메일을 입력해주세요"
           {...register("email")}
         />
-        <p className={style.errorMessage}>{errors.email?.message}</p>
-        <input 
-          className={`${style.input} ${errors.password ? style.errorInput : ''}`}
-          type={'password'} 
-          placeholder={"비밀번호를 입력해주세요"}
+        <S.ErrorMessage>{errors.email?.message}</S.ErrorMessage>
+
+        <S.Input
+          className={errors.password ? "error" : ""}
+          type="password"
+          placeholder="비밀번호를 입력해주세요"
           {...register("password")}
         />
-        <p className={style.errorMessage}>{errors.password?.message}</p>
-        <Button 
-          color='pink'
-          shape='block'
-          className={style.submitBtn}
-          type="submit" 
+        <S.ErrorMessage>{errors.password?.message}</S.ErrorMessage>
+
+        <S.SubmitButton
+          color="pink"
+          shape="block"
           disabled={!isDirty || !isValid || isSubmitting}
         >
           로그인
-        </Button>
-      </form>
-    </div>
+        </S.SubmitButton>
+      </S.Form>
+      <S.ToSignUp to={'/signUp'}>회원 가입이 되어있지 않으신가요?</S.ToSignUp>
+    </S.LoginContainer>
   );
 };

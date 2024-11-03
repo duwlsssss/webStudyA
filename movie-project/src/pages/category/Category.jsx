@@ -1,7 +1,6 @@
 import React from "react";
-// import { Link } from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
-import style from './Category.module.css';
+import * as S from './Category.styles';
 import nowPlayingImg from '../../assets/img/category/nowPlaying.jpg';
 import popularImg from '../../assets/img/category/popular.jpg';
 import topRatedImg from '../../assets/img/category/topRated.jpg';
@@ -20,24 +19,23 @@ export const Category = () => {
 
   return (
    <>
-      <div className={style.title}>카테고리</div>
-      <div className={style.cardList}>
-        {categories.map((category)=>
-          <div 
-            className={style.card}
+      <S.Title>카테고리</S.Title>
+      <S.CardList>
+        {categories.map((category) => (
+          <S.Card 
             key={category.id} 
-            onClick={() => navigate(`/categories/${category.category}`,{
-              replace:false,
-            })}>
-            <img 
-              className={style.cardImg}
+            onClick={() => navigate(`/categories/${category.category}`, {
+              replace: false,
+            })}
+          >
+            <S.CardImg 
               src={category.image} 
               alt={category.label}
             />
-            <div className={style.cardLabel}>{category.label}</div>
-          </div>
-        )}
-      </div>
+            <S.CardLabel>{category.label}</S.CardLabel>
+          </S.Card>
+        ))}
+      </S.CardList>
    </>
   )
 }

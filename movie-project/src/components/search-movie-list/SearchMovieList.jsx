@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import * as S from './SearchMovieList.style.js';
-import { MovieCard } from '../movie-card/MovieCard.jsx'
+import * as S from './SearchMovieList.styles';
+import { MovieCard } from '../movie-card/MovieCard'
 import { CardSkeletonList } from "../movie-card/skeleton/CardSkeletonList";
 import { useSearchParams } from "react-router-dom";
 import useCustomFetchMovie from "../../hooks/useCustomFetchMovie";

@@ -11,12 +11,14 @@ const AuthProvider = ({ children }) => {
     setUser(userData);
     localStorage.setItem('accessToken', userData.accessToken);
     localStorage.setItem('refreshToken', userData.refreshToken);
+    console.log('유저 정보 저장됨:', userData);
   }, [user]);
 
   const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    console.log('유저 정보 삭제됨');
   }, []);
 
   const actions = useMemo(() => ({ login, logout }), [login, logout]);

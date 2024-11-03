@@ -14,8 +14,6 @@ export const Navbar = () => {
 
   // 로그아웃 함수
   const handleLogout = () => {
-    // localStorage.removeItem('refreshToken');
-    // localStorage.removeItem('accessToken');
     logout();
     navigate('/login');
   };

@@ -28,6 +28,7 @@ const refreshAccessToken = async () => {
       throw new Error("유효하지 않은 토큰 갱신 응답");
     }
  
+    console.log(response)
     const { accessToken: newAccessToken, refreshToken } = response;
     localStorage.setItem('accessToken', newAccessToken);
     localStorage.setItem('refreshToken', refreshToken);
@@ -44,11 +45,11 @@ api.interceptors.request.use((config) => {
 
   const accessToken = localStorage.getItem('accessToken');
 
-  // 토큰이 필요 없는 엔드포인트 리스트
+  // accessToken이 필요 없는 엔드포인트 리스트
   const publicEndpoints = [
-    API_ENDPOINTS.LOGIN,       // 예시: 로그인 엔드포인트
-    API_ENDPOINTS.SIGNUP,      // 예시: 회원가입 엔드포인트
-    API_ENDPOINTS.REFRESH_TOKEN, // 토큰 갱신은 리프레시 토큰으로 처리
+    API_ENDPOINTS.LOGIN,       
+    API_ENDPOINTS.SIGNUP,      
+    API_ENDPOINTS.REFRESH_TOKEN, 
   ];
   
   // 요청 URL이 publicEndpoints에 포함되지 않는 경우에만 Authorization 헤더 추가
@@ -62,27 +63,18 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config; //실패한 요청의 설정 객체
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      
-      if (isRefreshing) {
-        // 이미 갱신이 진행 중이면 새로운 갱신 시도 방지
-        return Promise.reject(error);
-      }
-
-      originalRequest._retry = true; //_retry 속성을 true로 바꿔 재시도 중복 막음
-      isRefreshing = true;
-
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401) {
       try {
         const newAccessToken = await refreshAccessToken();
+        localStorage.setItem('accessToken', newAccessToken);
+
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        console.log(originalRequest);
-        isRefreshing = false; // 갱신 플래그 해제
-        return api(originalRequest); //재시도 요청 실행
+        
+        // 갱신된 originalRequest로 재시도
+        return api(originalRequest);
       } catch (refreshError) {
-        isRefreshing = false; // 갱신 실패 시 플래그 해제
         console.error('토큰 갱신 중 오류 발생:', refreshError);
-       
         // 갱신 실패 시 강제로 로그아웃
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');

@@ -4,6 +4,7 @@ import {NowPlaying} from './movie-categories/NowPlaying';
 import {Popular} from './movie-categories/Popular';
 import {TopRated} from './movie-categories/TopRated';
 import {Upcoming} from './movie-categories/Upcoming';
+import {Error} from '../../components';
 
 export const MoviesCategory = () => {
   const { category } = useParams();
@@ -19,13 +20,9 @@ export const MoviesCategory = () => {
       case 'upcoming':
         return <Upcoming />;
       default:
-        return <div>카테고리를 찾을 수 없습니다.</div>;
+        return <Error message="카테고리를 찾을 수 없습니다." />;
     }
   };
 
-  return (
-    <>
-      {renderComponent()}
-    </>
-  );
+  return <>{renderComponent()}</>;
 };

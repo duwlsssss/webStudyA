@@ -1,16 +1,26 @@
 import React from "react";
-import style from './Button.module.css';
+import * as S from './Button.styles';
 
-export const Button = ({ color = 'pink', shape = 'block', className='', onClick, children, ...props }) => {
+export const Button = ({  
+  className='', 
+  color = 'pink', 
+  shape = 'block', 
+  cursor='pointer', 
+  onClick, 
+  children, 
+  disabled = false,
+  ...props 
+}) => {
   return (
-    <button
-      className={`${style.button} ${className}`}
+    <S.StyledButton
+      className={className}
       data-color={color}
       data-shape={shape}
       onClick={onClick}
+      disabled={disabled}
       {...props}
     >
       {children}
-    </button>
+    </S.StyledButton>
   );
 };

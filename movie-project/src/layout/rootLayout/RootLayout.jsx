@@ -1,19 +1,19 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import {Navbar, SideBar} from "../../components";
-import style from './RootLayout.module.css';
+import { Navbar, SideBar } from "../../components";
+import * as S from './RootLayout.styles';
 
 const RootLayout = () => {
   return (
       <>
         <Navbar/>
-        <div className={style.contentContainer}>
+        <S.ContentContainer>
           <SideBar />
-          <div className={style.outletContianer}>
+          <S.OutletContainer>
             <Outlet />
-          </div>
-        </div>
-      </>
+          </S.OutletContainer>
+        </S.ContentContainer>
+    </>
   )
 }
 

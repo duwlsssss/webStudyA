@@ -1,20 +1,26 @@
 import React from "react";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
 import RootLayout from './layout/rootLayout/RootLayout';
-import {Home, Error, Login, SignUp, Search, Category, MoviesCategory, MovieDetails} from './pages';
+import {Home, NotFound, Login, SignUp, Search, Category, MoviesCategory, MovieDetails} from './pages';
 import GlobalStyles from "./GlobalStyles";
+import { AuthProvider } from "./contexts/AuthContext";
+
+const ProtectedRoute = ({ element }) => {
+	// accessToken이 없으면 로그인 페이지로 리다이렉트하고, 있으면 Home 페이지를 렌더링
+  const accessToken = localStorage.getItem('accessToken');
+  return accessToken ? element : <Navigate to="/login" replace />; 
+};
 
 const router = createBrowserRouter([
   {
 		path: '/',
 		element: <RootLayout/>,
-		errorElement: <Error/>,
+		errorElement: <NotFound/>,
 		children: [
 			{
-				// index: true는 위의 path: '/' 즉, 홈 경로를 의미
-				index: true,
-				element: <Home/>
-			},
+        index: true,
+        element: <ProtectedRoute element={<Home />} /> 
+      },
 			{
 				path: 'login',
 				element: <Login/>
@@ -45,10 +51,10 @@ const router = createBrowserRouter([
 
 function App() {
 	return(
-		<>
+		<AuthProvider>
 			<GlobalStyles />
 			<RouterProvider router={router}/>
-		</>
+		</AuthProvider>
 	);
 }
 

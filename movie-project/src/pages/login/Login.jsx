@@ -90,7 +90,6 @@ export const Login = () => {
   const handleLogin = async (data) => {
     try {
       const response = await Userlogin(data);
-      // console.log(response);
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
 

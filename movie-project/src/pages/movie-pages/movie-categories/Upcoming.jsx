@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as S from './MovieCategories.styles'
 import { MovieCard, CardSkeletonList, Error } from "../../../components";
 import useFetchMovies from '../../../hooks/queries/useFetchMovies' 
@@ -11,7 +11,35 @@ export const Upcoming = ({category}) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFetchMovies(category);
+  } = useFetchMovies(category, false);
+
+  const loadMoreRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "100px", //페이지 하단에 도달하기 100px 전에 추가 로드
+        threshold: 1.0, 
+      }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
 
   if (isLoading){
     return(
@@ -32,12 +60,8 @@ export const Upcoming = ({category}) => {
           <MovieCard key={movie.id} movieId={movie.id}/>
         ))
       )}
-      <button
-        onClick={() => fetchNextPage()}
-        disabled={!hasNextPage || isFetchingNextPage}
-      >
-        {isFetchingNextPage ? 'Loading more...' : 'Load More'}
-      </button>
+      <div ref={loadMoreRef} style={{ height: "1px" }} />
+      {isFetchingNextPage && <CardSkeletonList number={10}/>}
     </S.MoviesContainer>
   );
 }

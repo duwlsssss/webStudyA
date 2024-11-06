@@ -3,7 +3,7 @@ import * as S from './SearchMovieList.styles';
 import { MovieCard } from '../movie-card/MovieCard'
 import { CardSkeletonList } from "../movie-card/skeleton/CardSkeletonList";
 import { useSearchParams } from "react-router-dom";
-import useCustomFetchMovie from "../../hooks/useCustomFetchMovie";
+import useFetchMovies from "../../hooks/queries/useFetchMovies";
 
 export const SearchMovieList = () => {
 
@@ -11,7 +11,7 @@ export const SearchMovieList = () => {
   const mq = searchParams.get('mq');
 
   const url = mq ? `/search/movie?query=${encodeURIComponent(mq)}&include_adult=false&language=ko&page=1&region=KR` : null;
-  const { data: movies, isLoading, isError } = useCustomFetchMovie(url);
+  const { data: movies, isLoading, isError } = useFetchMovies(url);
 
 
   if (isLoading){
@@ -41,9 +41,9 @@ export const SearchMovieList = () => {
 
   return (
     <S.MoviesContainer>
-      {movies?.results?.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-      ))}
+      {movies?.results?.map((movie) => {
+        return <MovieCard key={movie.id} movieId={movie.id} />;
+      })}
     </S.MoviesContainer>
   );
 };

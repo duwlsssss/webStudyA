@@ -3,39 +3,24 @@ import {useNavigate} from "react-router-dom";
 import { MdLocalMovies } from "react-icons/md";
 import { Button } from '../button/Button';
 import * as S from './Navbar.styles';
-import { fetchUser } from "../../api/endpoints/user";
-import {useUserAuthValue,useUserAuthAction} from '../../contexts/AuthContext';
+import useFetchUserData from '../../hooks/queries/useFetchUserData';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const Navbar = () => {
-  const navigate = useNavigate();
 
-  const user = useUserAuthValue();
-  const {login,logout} = useUserAuthAction();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: user } = useFetchUserData(); 
 
   // 로그아웃 함수
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    console.log('토큰 삭제됨');
+
+    queryClient.invalidateQueries(['fetchUser']); //user data 무효화
+    navigate('/login', {replace: true});
   };
-
-  useEffect(() => {
-    const loadUser = async () => {
-      const accessToken = localStorage.getItem('accessToken');
-      //페이지 처음 로드시 localStorage에 accessToken이 있으면 그 유저 정보 불러와 사용
-      if (!user && accessToken){  
-        try {
-          const userData = await fetchUser();
-          console.log("유저 정보 업데이트:", userData);
-          login(userData);
-        } catch (error) {
-          console.error("유저 정보를 불러오는 중 오류 발생:", error);
-        }
-      }
-    };
-
-    loadUser();
-  }, [user, login]);
-
 
   return (
     <S.NavbarContainer>

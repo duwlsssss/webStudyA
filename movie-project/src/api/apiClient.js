@@ -21,18 +21,17 @@ const refreshAccessToken = async () => {
     });
 
     // 응답 데이터 유효성 검사
-    console.log("갱신 응답 데이터:", response);
-    if (!response || !response.accessToken || !response.refreshToken) {
-      throw new Error("유효하지 않은 토큰 갱신 응답");
-    }
- 
+    console.log("갱신 응답 데이터:", response.data);
     console.log(response)
-    const { accessToken, refreshToken } = response;
+    const { accessToken, refreshToken } = response.data;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
 
     return accessToken;
   } catch (error) {
+    console.log("갱신 요청 시작 - refreshToken:", refreshToken);
+    console.log("갱신 응답 데이터:", response.data);
+    console.log(response)
     console.error('토큰 갱신 중 오류 발생:', error);
     throw error;
   }
@@ -65,6 +64,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       try {
         const newAccessToken = await refreshAccessToken();
+        console.log(newAccessToken);
         localStorage.setItem('accessToken', newAccessToken);
 
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;

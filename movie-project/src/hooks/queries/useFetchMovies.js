@@ -22,7 +22,7 @@ const useFetchMovies = (category, page=1, pagenation=false) => {
     };
   }
   else{
-    const {data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
+    const {data, isLoading, isError, fetchNextPage, isFetchingNextPage} = useInfiniteQuery({
       queryKey: ['fetchMovies', category],
       queryFn: async ({ pageParam = 1 }) => {
         const url = `/movie/${category}?language=ko&page=${pageParam}&region=KR`;
@@ -41,7 +41,6 @@ const useFetchMovies = (category, page=1, pagenation=false) => {
       isLoading,
       isError,
       fetchNextPage,
-      hasNextPage,
       isFetchingNextPage,
     };
   }

@@ -7,30 +7,14 @@ const api = axios.create({
   baseURL: API_BASE_URL, 
 });
 
-// 요청을 인터셉트해서 요청마다 accessToken을 추가
-// api.interceptors.request.use((config) => {
-//   const accessToken = localStorage.getItem('accessToken');
-//   // accessToken이 필요 없는 엔드포인트 리스트
-//   const publicEndpoints = [
-//     API_ENDPOINTS.LOGIN,       
-//     API_ENDPOINTS.SIGNUP,      
-//     API_ENDPOINTS.REFRESH_TOKEN, 
-//   ];
-  
-//   // 요청 URL이 publicEndpoints에 포함되지 않는 경우에만 Authorization 헤더 추가
-//   if (accessToken && !publicEndpoints.includes(config.url)) {
-//     config.headers['Authorization'] = `Bearer ${accessToken}`;
-//   }
-//   return config;
-// });
-
 api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('accessToken');
      // accessToken이 필요 없는 엔드포인트 리스트
     const publicEndpoints = [
       API_ENDPOINTS.LOGIN,       
-      API_ENDPOINTS.SIGNUP,      
+      API_ENDPOINTS.SIGNUP, 
+      API_ENDPOINTS.REFRESH_TOKEN,     
     ];
     
     // 요청 URL이 publicEndpoints에 포함되지 않는 경우에만 Authorization 헤더 추가
@@ -57,15 +41,19 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken');
         console.log("갱신 요청 시작 - refreshToken:", refreshToken);
 
-        const response = await api.post(API_ENDPOINTS.REFRESH_TOKEN, {
-          refreshToken
+        const response = await api.post(API_ENDPOINTS.REFRESH_TOKEN, {}, {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`
+          }
         });
 
+        console.log(response.data)
         const { accessToken } = response.data;
         localStorage.setItem('accessToken', accessToken);
 
+        // 원래 요청에 갱신된 accessToken 설정
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-        return axios(originalRequest);
+        return api(originalRequest);
 
       } catch (error) {
         console.error('토큰 오류:', error);
@@ -76,10 +64,10 @@ api.interceptors.response.use(
   }
 );
 
+
 export async function apiCall({
   endpoint,
   method = 'get',
-  params = {},
   data = null,
   headers = {},
 }) {
@@ -88,7 +76,6 @@ export async function apiCall({
       baseURL: API_BASE_URL,
       url: endpoint,
       method,
-      params,
       data,
       headers: {
         'Content-Type': 'application/json',

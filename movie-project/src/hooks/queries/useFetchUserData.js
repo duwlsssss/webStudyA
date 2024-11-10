@@ -8,7 +8,7 @@ const useFetchUserData = () => {
     queryKey: ['fetchUser'],  
     queryFn: fetchUser,  
     enabled: !!accessToken,
-    staleTime: 1000 * 60
+    staleTime: 1000 * 60,
   });
 };
 

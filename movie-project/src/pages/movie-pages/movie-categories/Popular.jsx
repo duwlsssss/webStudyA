@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as S from './MovieCategories.styles'
+import { useInView } from "react-intersection-observer";
 import { MovieCard, CardSkeletonList, Error } from "../../../components";
 import useFetchMovies from '../../../hooks/queries/useFetchMovies' 
 
@@ -9,36 +10,17 @@ export const Popular = ({category}) => {
     isLoading,
     isError,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
   } = useFetchMovies(category, false);
 
-  const loadMoreRef = useRef();
+  const { ref, inView } = useInView();
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "100px", //페이지 하단에 도달하기 100px 전에 추가 로드
-        threshold: 1.0, 
-      }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    if (inView) { //사용해 스크롤이 하단에 도달했을 때 inView가 true
+      fetchNextPage(); //그럼 fetchNextPage호 다음 페이지 가져옴
     }
+  }, [inView]);
 
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (isLoading){
     return(
@@ -47,7 +29,7 @@ export const Popular = ({category}) => {
       </S.MoviesContainer>
     )  
   }
-  
+
   if(isError){
     return <Error message="오류가 발생했습니다." />;
   }
@@ -59,8 +41,7 @@ export const Popular = ({category}) => {
           <MovieCard key={movie.id} movieId={movie.id}/>
         ))
       )}
-      <div ref={loadMoreRef} style={{ height: "1px" }} />
-      {isFetchingNextPage && <CardSkeletonList number={10}/>}
+      {isFetchingNextPage ? (<CardSkeletonList number={10}/>) : (<div ref={ref}/>) }
     </S.MoviesContainer>
   );
 }

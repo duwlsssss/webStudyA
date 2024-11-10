@@ -18,7 +18,7 @@ export const MoviesCategory = () => {
       case 'top_rated':
         return <TopRated category={'top_rated'}/>;
       case 'upcoming':
-        return <Upcoming categiry={'upcoming'}/>;
+        return <Upcoming category={'upcoming'}/>;
       default:
         return <Error message="카테고리를 찾을 수 없습니다." />;
     }

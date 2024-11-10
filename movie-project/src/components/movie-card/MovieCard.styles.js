@@ -24,7 +24,9 @@ export const CardTitle = styled.div`
   font-weight: 700;
   font-size: var(--font-small);
   margin: 0.5rem 0;
-  word-break: keep-all;
+  overflow: hidden;
+  white-space: nowrap;  
+  text-overflow: ellipsis;
 `;
 
 export const CardReleaseDate = styled.div`

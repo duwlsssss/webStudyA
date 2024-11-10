@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from '../config.js';
 export async function fetchUser() {
   try {
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) throw new Error("access token이 없음");
+    if (!accessToken) return null;
 
     const response = await apiCall({
       endpoint: API_ENDPOINTS.USER,

@@ -17,9 +17,8 @@ export const Navbar = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     console.log('토큰 삭제됨');
-
-    queryClient.invalidateQueries(['fetchUser']); //user data 무효화
-    navigate('/login', {replace: true});
+    queryClient.setQueryData(['fetchUser'], null); 
+    navigate('/login');
   };
 
   return (

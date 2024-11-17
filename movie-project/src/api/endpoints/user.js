@@ -11,12 +11,13 @@ export async function fetchUser() {
       method: 'get',
       headers: {
         Authorization: `Bearer ${accessToken}`,
-      }
+      },
     });
 
     console.log('유저 fetch됨:', response);
     return response;
   } catch (error) {
     console.error('유저 fetch 오류:', error);
+    return null;
   }
 }

@@ -12,7 +12,7 @@ export const Main = styled.div`
   width: 100%;
   height: 400px;
   padding: 2rem;
-  background: url(${props => props.backgroundimage}) center / cover no-repeat;
+  background: url(${props => props.$backgroundimage}) center / cover no-repeat;
 `;
 
 export const MainTitle = styled.div`

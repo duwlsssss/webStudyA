@@ -94,9 +94,11 @@ export const Login = () => {
       localStorage.setItem('refreshToken', response.refreshToken);
 
       // user data를 refetch하고 cache함
+      // ProtectedRoute에 user 데이터를 즉시 반영해야해 이거 사용
       await queryClient.fetchQuery({ queryKey: ['fetchUser'], queryFn: fetchUser });
-
+      
       navigate('/'); // 로그인 성공 시 홈으로 이동
+
     } catch (error) {
       console.error('로그인 실패:', error.message);
     }

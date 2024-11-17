@@ -47,7 +47,7 @@ api.interceptors.response.use(
           }
         });
 
-        console.log(response.data)
+        console.log('갱신 응답 데이터', response.data)
         const { accessToken } = response.data;
         localStorage.setItem('accessToken', accessToken);
 
@@ -55,14 +55,38 @@ api.interceptors.response.use(
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         return api(originalRequest);
 
-      } catch (error) {
-        console.error('토큰 오류:', error);
+      } catch (refreshError) {
+        console.error('토큰 갱신 실패:', refreshError);
+
+        // 갱신 실패 시 로그아웃 처리
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login'; 
+        return Promise.reject(refreshError); // 갱신 실패 에러 반환
       }
     }
 
     return Promise.reject(error);
   }
 );
+
+
+api.interceptors.request.use((config) => {
+  console.log('Axios 요청:', config.url, config.headers);
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('Axios 응답:', response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('Axios 오류:', error.config.url, error.response.status);
+    return Promise.reject(error);
+  }
+);
+
 
 
 export async function apiCall({

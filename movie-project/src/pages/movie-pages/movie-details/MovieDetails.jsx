@@ -21,7 +21,7 @@ export const MovieDetails = () => {
 
   return (
     <S.Container>
-      <S.Main backgroundimage={`${import.meta.env.VITE_TMDB_IMG_URL}${backdrop_path}`}>
+      <S.Main $backgroundimage={`${import.meta.env.VITE_TMDB_IMG_URL}${backdrop_path}`}>
         <S.MainTitle>{title}</S.MainTitle>
         {vote_average && <S.Vote>▪ 평균 {vote_average}</S.Vote>}
         {release_year && <S.Release>▪ {release_year}</S.Release>}

@@ -18,7 +18,7 @@ export const registerUser = async (userData) => {
   }
 };
 
-export const Userlogin = async (userData) => {
+export const userlogin = async (userData) => {
   try {
     const response = await apiCall({
       endpoint: API_ENDPOINTS.LOGIN,

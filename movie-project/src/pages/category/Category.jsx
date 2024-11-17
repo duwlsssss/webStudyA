@@ -14,7 +14,7 @@ export const Category = () => {
     { id: 1, label: "현재 상영중인", image: nowPlayingImg, category: "now_playing" },
     { id: 2, label: "인기있는", image: popularImg, category: "popular" },
     { id: 3, label: "높은 평가를 받은", image: topRatedImg, category: "top_rated" },
-    { id: 4, label: "개봉 예정중인", image: upcomingImg, category: "upcoming" }
+    { id: 4, label: "개봉 예정인", image: upcomingImg, category: "upcoming" }
   ];
 
   return (

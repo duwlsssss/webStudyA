@@ -3,8 +3,7 @@ import * as S from './Signup.styles';
 import {useForm} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
-import { registerUser } from "../../api/endpoints/auth";
-import { useNavigate } from "react-router-dom";
+import useRegister from "../../hooks/queries/useRegister"
 
 export const SignUp = () => {
 
@@ -27,22 +26,16 @@ export const SignUp = () => {
     mode: "onChange",
   });
 
+  const registerMutation = useRegister();
 
-  const navigate = useNavigate();
-
-  const handleRegisterUser = async (data) => {
-    try {
-      const userData = {
-        email: data.email,
-        password: data.password,
-        passwordCheck: data.passwordCheck,
-      };
+  const handleRegisterUser = (data) => {
+    const userData = {
+      email: data.email,
+      password: data.password,
+      passwordCheck: data.passwordCheck,
+    };
       
-      await registerUser(userData);
-      navigate('/login');
-    } catch (error) {
-      console.error('회원 등록 실패 : ', error.message);
-    }
+    registerMutation.mutate(userData);
   };
 
 

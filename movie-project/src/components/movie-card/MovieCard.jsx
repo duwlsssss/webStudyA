@@ -1,13 +1,19 @@
 import React from "react";
 import * as S from './MovieCard.styles';
 import { useNavigate } from "react-router-dom";
+import { CardSkeleton, Error } from '../../components';
+import useFetchMovieDetails from '../../hooks/queries/useFetchMovieDetails';
 import defaultPoster from '../../assets/img/movie/poster/poster_null.png';
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({ movieId }) => {
   const navigate = useNavigate();
+  const { data: movie, isLoading, isError } = useFetchMovieDetails(movieId);
+
+  if (isLoading) return <CardSkeleton />;
+  if (isError) return <Error message="영화 정보를 가져오는 중 오류가 발생했습니다." />;
+
   return (
     <S.Card
-      key={movie.id}
       onClick={() => navigate(`/movies/${movie.id}`, {
         replace: false,
         state: {

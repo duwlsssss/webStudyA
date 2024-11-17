@@ -12,13 +12,13 @@ export const MoviesCategory = () => {
   const renderComponent = () => {
     switch (category) {
       case 'now_playing':
-        return <NowPlaying />;
+        return <NowPlaying category={'now_playing'}/>;
       case 'popular':
-        return <Popular />;
+        return <Popular category={'popular'}/>;
       case 'top_rated':
-        return <TopRated />;
+        return <TopRated category={'top_rated'}/>;
       case 'upcoming':
-        return <Upcoming />;
+        return <Upcoming category={'upcoming'}/>;
       default:
         return <Error message="카테고리를 찾을 수 없습니다." />;
     }

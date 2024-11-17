@@ -64,8 +64,8 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Userlogin } from "../../api/endpoints/auth";
 import { useNavigate } from "react-router-dom";
-import { useUserAuthAction } from '../../contexts/AuthContext';
-import {fetchUser} from '../../api/endpoints/user';
+import { fetchUser } from '../../api/endpoints/user';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const Login = () => {
   const schema = yup.object().shape({
@@ -85,27 +85,20 @@ export const Login = () => {
 
 
   const navigate = useNavigate();
-  const {login} = useUserAuthAction();
+  const queryClient = useQueryClient();
 
   const handleLogin = async (data) => {
     try {
       const response = await Userlogin(data);
-      // console.log(response);
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
 
-      localStorage.setItem('accessToken', response?.accessToken);
-      localStorage.setItem('refreshToken', response?.refreshToken);
-
-      const userData = await fetchUser();
-      // console.log('Fetched user data:', userData);
-      if(userData){
-        login({
-          ...userData,
-          refreshToken: response.refreshToken,
-          accessToken: response.accessToken,
-        });
-      }
-
+      // user data를 refetch하고 cache함
+      // ProtectedRoute에 user 데이터를 즉시 반영해야해 이거 사용
+      await queryClient.fetchQuery({ queryKey: ['fetchUser'], queryFn: fetchUser });
+      
       navigate('/'); // 로그인 성공 시 홈으로 이동
+
     } catch (error) {
       console.error('로그인 실패:', error.message);
     }

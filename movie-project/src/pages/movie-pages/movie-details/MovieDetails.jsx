@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import useCustomFetchMovie from "../../../hooks/useCustomFetchMovie";
+import useFetchMovieCredit from "../../../hooks/queries/useFetchMovieCredit";
 import defaultProfile from '../../../assets/img/movie/cast/profile_null.jpg'
 import * as S from './MovieDetails.styles'
 import { Error, Loading } from "../../../components";
 
 export const MovieDetails = () => {
-  const { movieId } = useParams();;
-  const {data: credit, isLoading, isError} = useCustomFetchMovie(`/movie/${movieId}/credits?language=ko`);
+  const { movieId } = useParams();
+  const {data: credit, isLoading, isError} = useFetchMovieCredit(movieId);
   const location = useLocation();
   const { title, backdrop_path, vote_average, overview, release_year, tagline, runtime } = location.state || {};
 
-  // console.log(credit?.cast);
-
   if (isLoading){
-    return <Loading message="로딩 중입니다." />;
+    return <Loading message="영화정보를 가져오는 중입니다." />;
   }
 
   if(isError){
-    return <Error message="카테고리를 찾을 수 없습니다." />;
+    return <Error message="영화 정보를 찾을 수 없습니다." />;
   }
 
   return (
     <S.Container>
-      <S.Main backgroundimage={`${import.meta.env.VITE_TMDB_IMG_URL}${backdrop_path}`}>
+      <S.Main $backgroundimage={`${import.meta.env.VITE_TMDB_IMG_URL}${backdrop_path}`}>
         <S.MainTitle>{title}</S.MainTitle>
         {vote_average && <S.Vote>▪ 평균 {vote_average}</S.Vote>}
         {release_year && <S.Release>▪ {release_year}</S.Release>}

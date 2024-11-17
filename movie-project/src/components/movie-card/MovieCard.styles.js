@@ -13,10 +13,10 @@ export const CardImg = styled.img`
   aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: var(--border-radius-small);
-  transition: filter 0.3s ease;
+  transition: transform 0.3s ease;
 
   &:hover{
-    filter: brightness(0.5);
+    transform: scale(1.05);
   }
 `;
 
@@ -24,7 +24,9 @@ export const CardTitle = styled.div`
   font-weight: 700;
   font-size: var(--font-small);
   margin: 0.5rem 0;
-  word-break: keep-all;
+  overflow: hidden;
+  white-space: nowrap;  
+  text-overflow: ellipsis;
 `;
 
 export const CardReleaseDate = styled.div`

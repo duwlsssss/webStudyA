@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback} from "react"
 import Button from "./Button"
 import Input from "./Input"
 import styled from 'styled-components'
-import { useQuery, } from '@tanstack/react-query';
+import { useQuery, } from '@tanstack/react-query'
 import {useAddTodo, useEditTodo, useDeleteTodo} from '../hooks/useTodo'
-import { fetchTodo } from "../api/todo";
-import useDebounce from "../hooks/useDebounce";
-import { useNavigate } from "react-router-dom";
+import { fetchTodo } from "../api/todo"
+import useDebounce from "../hooks/useDebounce"
+import { useNavigate } from "react-router-dom"
+import useForm from '../hooks/useForm'
+import { validateTodo } from "../utils/validate"
 
 const StyledContainer = styled.div`
 
@@ -21,18 +23,31 @@ const StyledContainer = styled.div`
     width: 80%;
   }
 
+
   .add-form{
     border-radius: 1rem;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: 1rem;
     align-items: center; 
     padding: 1rem;
     margin: 2rem auto;
   }
 
-  .add-form input{
-    width: 46%;
+  .add-form-inner{
+    flex: 1;
+  }
+
+  .add-form-inner .input.error {
+    border: 1px solid red;
+  }
+  
+  .error-message-add{
+    color: red;
+    margin: 3px 0 -12px 5px;
+    text-align: start;
+    font-size: 0.6rem;
   }
 
   .todo-list {
@@ -70,10 +85,14 @@ const StyledContainer = styled.div`
     font-size: 0.8rem;
   }
 
-  .edit-input input{
+  .edit-input .input{
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     border: 1px solid #999;
+  }
+
+  .edit-input .input.error{
+    border: 1px solid red;
   }
 
   .btn-container {
@@ -81,17 +100,20 @@ const StyledContainer = styled.div`
     justify-content: flex-end;
     gap: 0.5rem;
   }
+  
+  .error-message{
+    color: red;
+    margin: -5px 0 5px 5px;
+    text-align: start;
+    font-size: 0.8rem;
+  }
 `;
 
 
 const ToDoList = () => {
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [editId, setEditId] = useState(null); // 수정할 Todo의 ID
-  const [editTitle, setEditTitle] = useState('');
-  const [editContent, setEditContent] = useState('');
   const [searchValue, setSearchValue] =useState('');
   const debouncedSearchValue = useDebounce(searchValue,500); //200ms로 설정된 debounce
 
@@ -99,9 +121,26 @@ const ToDoList = () => {
     queryFn: () => fetchTodo({title: debouncedSearchValue}),
     queryKey: ['todos', debouncedSearchValue]
   });
+
   const addTodo = useAddTodo();
   const editTodo = useEditTodo();
   const deleteTodo = useDeleteTodo();
+
+  const stableValidateOptionsAdd = useMemo(() => ({ editMode: false }), []);
+  const stableValidateOptionsEdit = useMemo(() => ({ editMode: true }), []);
+  const stableValidateTodo = useCallback(validateTodo, []);
+
+  const todoAdd = useForm({
+    initialValue: {title: '', content: ''},
+    validate: stableValidateTodo,
+    validateOptions: stableValidateOptionsAdd,  
+  });
+
+  const todoEdit = useForm({
+    initialValue: {title: '', content: ''},
+    validate: stableValidateTodo,
+    validateOptions: stableValidateOptionsEdit,  
+  });
 
   if (isLoading) return <div>로딩중</div>;
   if (error) return <div>에러 발생</div>;
@@ -110,12 +149,11 @@ const ToDoList = () => {
     e.preventDefault();
 
     addTodo.mutate(
-      { title, content },
+      todoAdd.values,
       {
         onSuccess: () => {
           alert("추가되었습니다!");
-          setTitle("");
-          setContent("");
+          todoAdd.setValues({ title: '', content: '' });
         },
       }
     );
@@ -125,13 +163,12 @@ const ToDoList = () => {
     e.preventDefault();
 
     editTodo.mutate(
-      { id: editId, title: editTitle, content: editContent },
+      { id: editId, ...todoEdit.values },
       {
         onSuccess: () => {
           alert("수정되었습니다!");
           setEditId(null);
-          setEditTitle("");
-          setEditContent("");
+          todoEdit.setValues({ title: '', content: '' });
         },
       }
     );
@@ -147,21 +184,25 @@ const ToDoList = () => {
         placeholder="검색할 제목을 입력하세요"
       />
       <form className="add-form" onSubmit={handleAddTodo}>
-        <Input
-          className="input"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 입력하세요"
-        />
-        <Input
-          className="input"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="내용을 입력하세요"
-        />
+        <div className="add-form-inner">
+          <Input
+            className={`input ${todoAdd.touched.title && todoAdd.errors.title ? 'error' : ''}`}
+            placeholder="제목을 입력하세요"
+            {...todoAdd.getTextInputProps('title')}
+          />
+          {todoAdd.touched.title && todoAdd.errors.title && <p className='error-message-add'>{todoAdd.errors.title}</p>}
+        </div>
+        <div className="add-form-inner">
+          <Input
+             className={`input ${todoAdd.touched.content && todoAdd.errors.content ? 'error' : ''}`}
+            placeholder="내용을 입력하세요"
+            {...todoAdd.getTextInputProps('content')}
+          />
+          {todoAdd.touched.content && todoAdd.errors.content && <p className='error-message-add'>{todoAdd.errors.content}</p>}
+        </div>
         <Button
           text="+"
-          disabled={!title.trim() || !content.trim()}
+          disabled={todoAdd.errors.title||todoAdd.errors.content}
         />
       </form>
       <ul className="todo-list">
@@ -170,31 +211,31 @@ const ToDoList = () => {
             {editId === todo.id ? (
               <form className="edit-form" onSubmit={handleEditTodo}>
                 <div className="edit-input">
-                  <Input
-                    className="input"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
+                <Input
+                    className={`input ${todoEdit.touched.title && todoEdit.errors.title ? 'error' : ''}`}
+                    {...todoEdit.getTextInputProps('title')}
                     placeholder="새 제목"
                   />
+                  {todoEdit.touched.title && todoEdit.errors.title && <p className='error-message'>{todoEdit.errors.title}</p>}
                   <Input
-                    className="input"
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
+                    className={`input ${todoEdit.touched.content && todoEdit.errors.content ? 'error' : ''}`}
+                    {...todoEdit.getTextInputProps('content')}
                     placeholder="새 내용"
                   />
+                  {todoEdit.touched.content && todoEdit.errors.content && <p className='error-message'>{todoEdit.errors.content}</p>}
                 </div>
                 <div className="btn-container">
                   <Button 
                     className="btn" 
                     text='완료'
+                    disabled={todoEdit.errors.title || todoEdit.errors.content}
                   />
                   <Button
                     className="btn"
                     text="취소"
                     onClick={() => {
                       setEditId(null);
-                      setEditTitle('');
-                      setEditContent('');
+                      todoEdit.setValues({ title: '', content: '' });
                     }}
                   />
                 </div>
@@ -217,8 +258,7 @@ const ToDoList = () => {
                     text="수정"
                     onClick={() => {
                       setEditId(todo.id);
-                      setEditTitle(todo.title);
-                      setEditContent(todo.content);
+                      todoEdit.setValues({ title: todo.title, content: todo.content });
                     }}
                   />
                   <Button text="상세보기" onClick={() => navigate(`/todo/${todo.id}`)}/>

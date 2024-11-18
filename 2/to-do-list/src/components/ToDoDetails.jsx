@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useMemo, useCallback} from 'react'
 import styled from 'styled-components'
 import { useParams, useNavigate } from "react-router-dom"
 import { useEditTodo, useDeleteTodo } from "../hooks/useTodo"
@@ -6,6 +6,8 @@ import {fetchTodoById} from '../api/todo'
 import {useQuery} from'@tanstack/react-query'
 import Input from "./Input"
 import Button from "./Button"
+import useForm from '../hooks/useForm'
+import { validateTodo } from "../utils/validate"
 
 const StyledContainer = styled.div`
 
@@ -60,16 +62,27 @@ const StyledContainer = styled.div`
     font-size: 0.8rem;
   }
 
-  .edit-input input{
+  .edit-input .input{
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     border: 1px solid #999;
+  }
+
+  .edit-input .input.error{
+    border: 1px solid red;
   }
 
   .btn-container {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+  }
+
+  .error-message{
+    color: red;
+    margin: -5px 0 5px 5px;
+    text-align: start;
+    font-size: 0.8rem;
   }
 `;
 
@@ -78,8 +91,6 @@ const ToDoDetails = () => {
   const navigate = useNavigate();
 
   const [editId, setEditId] = useState(null); // 수정할 Todo의 ID
-  const [editTitle, setEditTitle] = useState('');
-  const [editContent, setEditContent] = useState('');
 
   const { data: todo, isLoading, error } = useQuery({
     queryFn: () => fetchTodoById({id}),
@@ -90,6 +101,15 @@ const ToDoDetails = () => {
   const editTodo = useEditTodo();
   const deleteTodo = useDeleteTodo();
 
+  const stableValidateOptionsEdit = useMemo(() => ({ editMode: true }), []);
+  const stableValidateTodo = useCallback(validateTodo, []);
+
+  const todoEdit = useForm({
+    initialValue: {title: '', content: ''},
+    validate: stableValidateTodo,
+    validateOptions: stableValidateOptionsEdit,  
+  });
+
   if (isLoading) return <div>로딩중</div>;
   if (error) return <div>에러 발생</div>;
 
@@ -97,13 +117,12 @@ const ToDoDetails = () => {
     e.preventDefault();
 
     editTodo.mutate(
-      { id: editId, title: editTitle, content: editContent },
+      { id: editId, ...todoEdit.values },
       {
         onSuccess: () => {
           alert("수정되었습니다!");
           setEditId(null);
-          setEditTitle("");
-          setEditContent("");
+          todoEdit.setValues({ title: '', content: '' });
         },
       }
     );
@@ -127,30 +146,30 @@ const ToDoDetails = () => {
           <form className="edit-form" onSubmit={handleEditTodo}>
             <div className="edit-input">
               <Input
-                className="input"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
+                className={`input ${todoEdit.touched.title && todoEdit.errors.title ? 'error' : ''}`}
+                {...todoEdit.getTextInputProps('title')}
                 placeholder="새 제목"
               />
+              {todoEdit.touched.title && todoEdit.errors.title && <p className='error-message'>{todoEdit.errors.title}</p>}
               <Input
-                className="input"
-                value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
+                className={`input ${todoEdit.touched.content && todoEdit.errors.content ? 'error' : ''}`}
+                {...todoEdit.getTextInputProps('content')}
                 placeholder="새 내용"
               />
+              {todoEdit.touched.content && todoEdit.errors.content && <p className='error-message'>{todoEdit.errors.content}</p>}
             </div>
             <div className="btn-container">
               <Button 
                 className="btn" 
                 text='완료'
+                disabled={todoEdit.errors.title || todoEdit.errors.content}
               />
               <Button
                 className="btn"
                 text="취소"
                 onClick={() => {
                   setEditId(null);
-                  setEditTitle('');
-                  setEditContent('');
+                  todoEdit.setValues({ title: '', content: '' });
                 }}
               />
             </div>
@@ -174,8 +193,7 @@ const ToDoDetails = () => {
                 text="수정"
                 onClick={() => {
                   setEditId(todo.id);
-                  setEditTitle(todo.title);
-                  setEditContent(todo.content);
+                  todoEdit.setValues({ title: todo.title, content: todo.content });
                 }}
               />
               <Button text="삭제" onClick={handleDeleteTodo}/>

@@ -57,15 +57,12 @@
 // };
 
 
-import React from "react";
-import * as S from './Login.styles';
+import React from "react"
+import * as S from './Login.styles'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Userlogin } from "../../api/endpoints/auth";
-import { useNavigate } from "react-router-dom";
-import { fetchUser } from '../../api/endpoints/user';
-import { useQueryClient } from '@tanstack/react-query';
+import useLogin from "../../hooks/queries/useLogin"
 
 export const Login = () => {
   const schema = yup.object().shape({
@@ -83,25 +80,10 @@ export const Login = () => {
     mode: "onChange",
   });
 
+  const loginMutation = useLogin();
 
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const handleLogin = async (data) => {
-    try {
-      const response = await Userlogin(data);
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-
-      // user data를 refetch하고 cache함
-      // ProtectedRoute에 user 데이터를 즉시 반영해야해 이거 사용
-      await queryClient.fetchQuery({ queryKey: ['fetchUser'], queryFn: fetchUser });
-      
-      navigate('/'); // 로그인 성공 시 홈으로 이동
-
-    } catch (error) {
-      console.error('로그인 실패:', error.message);
-    }
+  const handleLogin = (data) => {
+    loginMutation.mutate(data); 
   };
 
   return (

@@ -4,12 +4,11 @@ import { MdLocalMovies } from "react-icons/md";
 import { Button } from '../button/Button';
 import * as S from './Navbar.styles';
 import useFetchUserData from '../../hooks/queries/useFetchUserData';
-import { useQueryClient } from '@tanstack/react-query';
+import { queryClient } from '../../App';
 
 export const Navbar = () => {
 
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: user } = useFetchUserData(); 
 
   // 로그아웃 함수

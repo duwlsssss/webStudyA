@@ -39,9 +39,12 @@ const GlobalStyles = createGlobalStyle`
     --color-white: #fff;
     --color-gray: #777;
     --color-dark-gray: #555;
+    --color-pale-gray: #999;
+    --color-black: #000;
 
     --border-radius-small: 5px;
     --border-radius-medium: 10px;
+    --border-radius-large: 20px;
   }
 
   body {

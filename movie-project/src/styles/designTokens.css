@@ -1,0 +1,19 @@
+:root {
+  --font-xsmall: clamp(0.5rem, 1vw, 0.8rem);
+  --font-small: clamp(0.8rem, 1.5vw, 1rem);
+  --font-medium: clamp(1.2rem, 2vw, 1.7rem);
+  --font-large: clamp(1.5rem, 2.5vw, 2rem);
+  --font-xlarge: clamp(2rem, 4vw, 6rem);
+
+  --color-pink: #fc1287;
+  --color-pink-dark: #E21079;
+  --color-white: #fff;
+  --color-gray: #777;
+  --color-dark-gray: #555;
+  --color-pale-gray: #999;
+  --color-black: #000;
+
+  --border-radius-small: 5px;
+  --border-radius-medium: 10px;
+  --border-radius-large: 20px;
+}

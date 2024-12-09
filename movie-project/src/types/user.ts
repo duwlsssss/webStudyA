@@ -1,4 +1,4 @@
-interface TUserData {
+export interface TUserData {
   id: string;
   email: string;
 }

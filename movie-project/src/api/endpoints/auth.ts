@@ -1,10 +1,10 @@
 import { apiCall } from '../apiClient'
 import { API_ENDPOINTS } from '../config'
-import { TRegisterData, TTokens, TLoginData } from '../../types/auth'
+import { TRegisterData, TRegisterResponse, TTokens, TLoginData } from '../../types/auth'
 
-export const registerUser = async (userData: TRegisterData): Promise<TTokens | null> => {
+export const registerUser = async (userData: TRegisterData): Promise<TRegisterResponse> => {
   try {
-    const response = await apiCall({
+    const response = await apiCall<TRegisterResponse>({
       endpoint: API_ENDPOINTS.REGISTER,
       method: 'post',
       data: userData,
@@ -15,11 +15,11 @@ export const registerUser = async (userData: TRegisterData): Promise<TTokens | n
   } catch (error) {
     console.error('유저 등록 오류:', error);
     alert(error);
-    return error;
+    throw error;
   }
 };
 
-export const userlogin = async (userData: TLoginData): Promise<TTokens | null> => {
+export const userlogin = async (userData: TLoginData): Promise<TTokens> => {
   try {
     const response = await apiCall<TTokens>({
       endpoint: API_ENDPOINTS.LOGIN,
@@ -31,5 +31,6 @@ export const userlogin = async (userData: TLoginData): Promise<TTokens | null> =
     return response;
   } catch (error) {
     console.error('로그인 오류:', error);
+    throw error;
   }
 };

@@ -1,15 +1,20 @@
-interface TRegisterData {
+export interface TRegisterData {
   email: string;
   password: string;
   passwordCheck: string;
 }
-
-interface TLoginData {
+export interface TRegisterResponse {
+  id: number;
   email: string;
   password: string;
 }
 
-interface TTokens {
+export interface TLoginData {
+  email: string;
+  password: string;
+}
+
+export interface TTokens {
   accessToken: string;
   refreshToken: string;
 }
